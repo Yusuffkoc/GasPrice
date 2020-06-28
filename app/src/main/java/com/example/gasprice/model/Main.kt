@@ -6,7 +6,7 @@ data class Main(
     @SerializedName("lastupdate")
     public val lastupdate: String,
     @SerializedName("result")
-    val result: Result,
-@SerializedName("success")
-    val success:Boolean
+    val result: List<Result>,
+    @SerializedName("success")
+    val success: Boolean
 )

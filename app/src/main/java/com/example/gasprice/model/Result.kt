@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class Result(
     @SerializedName("benzin")
-    val benzinDeger: Int,
+    val benzinDeger: String?,
     @SerializedName("marka")
     val marka: String
 

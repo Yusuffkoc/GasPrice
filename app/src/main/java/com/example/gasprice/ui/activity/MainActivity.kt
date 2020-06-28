@@ -2,8 +2,6 @@ package com.example.gasprice.ui.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -18,18 +16,16 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class MainActivity : AppCompatActivity() {
-
-    val apiClient = ApiClient.getApiClient()
+    lateinit var tv: TextView
+    private val apiClient by lazy { ApiClient.getApiClient() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowTitleEnabled(false)
-        var tv = toolbar.findViewById<TextView>(R.id.toolbarText)
-
+        tv = toolbar.findViewById<TextView>(R.id.toolbarText)
 
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
@@ -40,24 +36,26 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-
     private fun getData() {
-        apiClient.getMainWithQuery("burdur").enqueue(object : Callback<List<Main>> {
-            override fun onFailure(call: Call<List<Main>>, t: Throwable) {
+        apiClient.getMainWithQuery("apikey 5sAtslnQW7iShTJBVzM84u:0LtqN721wmNS0R5wsXriyd", "burdur")
+            .enqueue(object : Callback<Main> {
+                override fun onResponse(call: Call<Main>, response: Response<Main>) {
 
-                Log.e("MainActivity", "onFailure: ${t.message}")
-            }
 
-            override fun onResponse(call: Call<List<Main>>, response: Response<List<Main>>) {
+                    if (response.isSuccessful) {
+                        tv.text = response.body()?.lastupdate
+                        Toast.makeText(this@MainActivity, "Successfull", Toast.LENGTH_SHORT).show()
+                        recyclerView.adapter = UserAdapter(response.body()?.result!!)
 
-                if (response.isSuccessful) {
-                    //recyclerView.adapter=UserAdapter(response.body()?.)
-
-                    Toast.makeText(this@MainActivity, "Successfull", Toast.LENGTH_SHORT).show()
+                    }
                 }
-            }
 
-        })
-
+                override fun onFailure(call: Call<Main>, t: Throwable) {
+                    Toast.makeText(this@MainActivity, "Fail", Toast.LENGTH_SHORT).show()
+                }
+            })
     }
+
+
 }
+
